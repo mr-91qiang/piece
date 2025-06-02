@@ -5,7 +5,12 @@
 #include <chrono>
 #include <thread>
 #include "FileName.h"
-char board[3][3];
+constexpr int BOARD_SIZE = 3;
+constexpr int CELL_SIZE = 100;
+constexpr int BOARD_OFFSET = 100;
+constexpr int WINDOW_SIZE = 500;
+
+char board[BOARD_SIZE][BOARD_SIZE];
 
 // 胜利
 bool CheckWin(char c) {
@@ -155,11 +160,10 @@ int main() {
 				MessageBox(GetHWnd(), _T("平局"), _T("游戏结束"), MB_OK);
 				running = false;
 			}
-			// 限定60帧每秒
-			std::this_thread::sleep_for(std::chrono::milliseconds(16)); // 约60帧每秒
 			DWORD end = GetTickCount();
-			if (1000 / 60 > (end-start)) {
-				std::this_thread::sleep_for(std::chrono::milliseconds(1000 / 60 - end-start));
+			DWORD elapsed = (end >= start) ? (end - start) : (UINT_MAX - start + end);
+			if (1000 / 60 > elapsed) {
+				std::this_thread::sleep_for(std::chrono::milliseconds(1000 / 60 - elapsed));
 			}
 		}
 	}
